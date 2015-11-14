@@ -2,6 +2,9 @@
 
 from Adafruit_PWM_Servo_Driver import PWM
 import time
+import rospy
+
+from std_msgs.msg import String
 
 # ===========================================================================
 # Example Code
@@ -14,6 +17,7 @@ pwm = PWM(0x40)
 
 servoMin = 150  # Min pulse length out of 4096
 servoMax = 600  # Max pulse length out of 4096
+pwm.setPWMFreq(60)                        # Set frequency to 60 Hz
 
 def setServoPulse(channel, pulse):
   pulseLength = 1000000                   # 1,000,000 us per second
@@ -25,13 +29,23 @@ def setServoPulse(channel, pulse):
   pulse /= pulseLength
   pwm.setPWM(channel, 0, pulse)
 
-pwm.setPWMFreq(60)                        # Set frequency to 60 Hz
-while (True):
-  # Change speed of continuous servo on channel O
-  pwm.setPWM(0, 0, servoMin)
-  time.sleep(1)
-  pwm.setPWM(0, 0, servoMax)
-  time.sleep(1)
+def servo_move():
+    pub = rospy.Publisher('chatter', String, queue_size=10)
+    rospy.init_node('talker', anonymous=True)
+    rate = rospy.Rate(.05) # 10hz
+    while not rospy.is_shutdown():
+        hello_str = "hello world %s" % rospy.get_time()
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+	pwm.setPWM(0, 0, servoMin)
+	time.sleep(.9)
+	pwm.setPWM(0, 0, servoMax)
+	time.sleep(.9)
 
+        rate.sleep()
 
-
+if __name__ == '__main__':
+    try:
+        servo_move()
+    except rospy.ROSInterruptException:
+        pass
