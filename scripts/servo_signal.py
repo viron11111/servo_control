@@ -12,7 +12,7 @@ servoMax = 600  # Max pulse length out of 4096
 def servo_move():
     pub = rospy.Publisher('servo_position', Int16, queue_size=10)
     rospy.init_node('desired_postion', anonymous=True)
-    rate = rospy.Rate(2) #hz
+    rate = rospy.Rate(1) #hz
     while not rospy.is_shutdown():
         position = random.randint(140, 710)
 

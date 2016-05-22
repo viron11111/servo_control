@@ -1,6 +1,6 @@
 <launch>
 	
-	<include file="$(find servo_control)/launch/example.launch" />
+<!--	<include file="$(find servo_control)/launch/example.launch" />  !-->
 
 	<node pkg="servo_control" type="Servo_Example.py" name="servo_swing" />
 		
